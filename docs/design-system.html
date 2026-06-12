@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Techo Solutions Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --ts-blue-900: #0f2e6d;
+      --ts-blue-700: #23488f;
+      --ts-blue-500: #3f69bb;
+      --ts-gold-500: #f3c63d;
+      --ts-gold-400: #ffd454;
+      --ts-gold-100: #fff5cc;
+      --ts-ink: #162033;
+      --ts-muted: #61708b;
+      --ts-line: #dbe2ef;
+      --ts-surface: #f5f7fb;
+      --ts-white: #ffffff;
+      --ts-shadow: 0 24px 60px rgba(15, 46, 109, 0.12);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --grid-gap: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      color: var(--ts-ink);
+      background:
+        radial-gradient(circle at top left, rgba(255, 212, 84, 0.35), transparent 26%),
+        linear-gradient(180deg, #ffffff 0%, #f4f8ff 54%, #eef3fb 100%);
+    }
+
+    .shell {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 80px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(219, 226, 239, 0.85);
+      border-radius: 40px;
+      box-shadow: var(--ts-shadow);
+      padding: clamp(1.5rem, 4vw, 3rem);
+      backdrop-filter: blur(10px);
+      isolation: isolate;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero::before {
+      width: 280px;
+      height: 280px;
+      background: rgba(35, 72, 143, 0.08);
+      top: -110px;
+      right: -80px;
+    }
+
+    .hero::after {
+      width: 220px;
+      height: 220px;
+      background: rgba(243, 198, 61, 0.16);
+      bottom: -120px;
+      left: -60px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      background: var(--ts-gold-100);
+      color: var(--ts-blue-900);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .icon {
+      width: 1rem;
+      height: 1rem;
+      stroke-width: 2;
+      flex: 0 0 auto;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: clamp(1.5rem, 3vw, 2.5rem);
+      align-items: center;
+      margin-top: 1.25rem;
+    }
+
+    .brand-lockup {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .mark-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .mark {
+      display: block;
+      width: 158px;
+      height: auto;
+    }
+
+    .tagline-script {
+      font-family: "Caveat", cursive;
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--ts-blue-900);
+    }
+
+    .wordmark {
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .wordmark::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.2rem;
+      bottom: 0.2rem;
+      width: 4px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--ts-blue-900), var(--ts-blue-500));
+    }
+
+    .wordmark-top,
+    .wordmark-bottom {
+      margin: 0;
+      font-size: clamp(2.8rem, 7vw, 5.7rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .wordmark-top {
+      color: var(--ts-blue-900);
+      font-weight: 800;
+    }
+
+    .wordmark-bottom {
+      color: var(--ts-gold-500);
+      font-weight: 800;
+    }
+
+    .hero-copy h1 {
+      margin: 0 0 0.85rem;
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+      max-width: 10ch;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      color: var(--ts-muted);
+      font-size: 1rem;
+      line-height: 1.75;
+      max-width: 62ch;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-top: 1.5rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      min-height: 52px;
+      padding: 0 1.2rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, border-color 180ms ease;
+      cursor: pointer;
+    }
+
+    .button::before {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .button-primary {
+      background: linear-gradient(180deg, #3158a7 0%, #173a7d 58%, #102d68 100%);
+      color: var(--ts-white);
+      border-color: transparent;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 -5px 10px rgba(8, 23, 55, 0.18),
+        0 4px 10px rgba(15, 46, 109, 0.18);
+    }
+
+    .button-primary::before {
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 48%);
+    }
+
+    .button-secondary {
+      background: linear-gradient(180deg, #ffffff 0%, #f1f5fb 100%);
+      color: var(--ts-blue-900);
+      border-color: #cbd6e8;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        inset 0 -4px 10px rgba(152, 171, 204, 0.18),
+        0 4px 10px rgba(20, 35, 70, 0.08);
+    }
+
+    .button-secondary::before {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 58%);
+    }
+
+    .button-primary:active,
+    .button-secondary:active {
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -3px 8px rgba(8, 23, 55, 0.16),
+        0 2px 6px rgba(15, 46, 109, 0.12);
+    }
+
+    .signal-card {
+      display: grid;
+      gap: 1rem;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(241, 246, 253, 0.96) 100%);
+      border: 1px solid rgba(210, 221, 238, 0.95);
+      border-radius: 28px;
+      padding: 1.5rem;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 16px 30px rgba(25, 60, 128, 0.08);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .signal-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent 26%),
+        linear-gradient(315deg, rgba(25, 60, 128, 0.04), transparent 22%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .signal-item {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 255, 0.98));
+      border-radius: 22px;
+      padding: 1rem;
+      border: 1px solid rgba(214, 224, 239, 0.95);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.88),
+        0 10px 24px rgba(27, 52, 99, 0.05);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .signal-item strong {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 1.35rem;
+      color: var(--ts-blue-900);
+    }
+
+    .section {
+      margin-top: 1.4rem;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(219, 226, 239, 0.9);
+      border-radius: 32px;
+      box-shadow: 0 18px 48px rgba(17, 42, 89, 0.08);
+      padding: clamp(1.35rem, 3vw, 2rem);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1.35rem;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      letter-spacing: -0.04em;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--ts-muted);
+      max-width: 58ch;
+      line-height: 1.65;
+    }
+
+    .token-grid,
+    .components-grid,
+    .application-grid {
+      display: grid;
+      gap: var(--grid-gap);
+    }
+
+    .token-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .token {
+      border-radius: 24px;
+      overflow: hidden;
+      background: var(--ts-white);
+      border: 1px solid var(--ts-line);
+    }
+
+    .swatch {
+      aspect-ratio: 1.05;
+    }
+
+    .token-copy {
+      padding: 1rem;
+    }
+
+    .token-copy strong,
+    .spec dt {
+      display: block;
+      color: var(--ts-blue-900);
+      font-weight: 800;
+    }
+
+    .token-copy span,
+    .spec dd {
+      margin: 0.25rem 0 0;
+      color: var(--ts-muted);
+      font-size: 0.95rem;
+    }
+
+    .type-specimen {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--grid-gap);
+      align-items: stretch;
+    }
+
+    .icon-library-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: var(--grid-gap);
+    }
+
+    .type-card,
+    .component-card,
+    .app-card {
+      border: 1px solid rgba(214, 224, 239, 0.95);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 250, 255, 0.96));
+      padding: 1.25rem;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.92),
+        0 14px 28px rgba(22, 39, 74, 0.06);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .type-card::before,
+    .component-card::before,
+    .app-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 84px;
+      height: 84px;
+      background:
+        linear-gradient(135deg, rgba(25, 60, 128, 0.06), transparent 62%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .type-card::after,
+    .component-card::after,
+    .app-card::after {
+      content: "";
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(25, 60, 128, 0.12);
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero > *,
+    .signal-card > *,
+    .signal-item > *,
+    .type-card > *,
+    .component-card > *,
+    .app-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .display-sample {
+      font-size: clamp(2rem, 5vw, 4.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+      margin: 0 0 1rem;
+      color: var(--ts-blue-900);
+      font-weight: 800;
+    }
+
+    .type-card p {
+      color: var(--ts-muted);
+      line-height: 1.75;
+      margin: 0;
+    }
+
+    .script-note {
+      display: inline-block;
+      margin-top: 1rem;
+      font-family: "Caveat", cursive;
+      font-size: 2rem;
+      color: var(--ts-blue-700);
+    }
+
+    .spec {
+      display: grid;
+      gap: 1rem;
+      margin: 0;
+    }
+
+    .icon-showcase {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .icon-chip {
+      display: grid;
+      gap: 0.65rem;
+      padding: 1rem;
+      border-radius: 20px;
+      border: 1px solid rgba(214, 224, 239, 0.95);
+      background: linear-gradient(180deg, #ffffff 0%, #f6f9fe 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .icon-chip-mark {
+      width: 2.2rem;
+      height: 2.2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: rgba(35, 72, 143, 0.08);
+      color: var(--ts-blue-900);
+    }
+
+    .icon-chip-mark .icon {
+      width: 1.05rem;
+      height: 1.05rem;
+    }
+
+    .icon-chip strong {
+      color: var(--ts-blue-900);
+      font-size: 0.95rem;
+    }
+
+    .icon-chip span {
+      color: var(--ts-muted);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .components-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .application-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mini-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.8rem;
+      color: var(--ts-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .stack {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      border: 1px solid var(--ts-line);
+      border-radius: 16px;
+      background: #fbfcff;
+      padding: 0.95rem 1rem;
+      font: inherit;
+      color: var(--ts-ink);
+    }
+
+    .textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.42rem 0.68rem;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      border: 1px solid transparent;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+
+    .pill::before {
+      display: none;
+    }
+
+    .pill .icon {
+      width: 0.78rem;
+      height: 0.78rem;
+      stroke-width: 2.2;
+      opacity: 0.82;
+      color: currentColor;
+    }
+
+    .progress-meta span:first-child {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .pill-blue {
+      background: rgba(35, 72, 143, 0.08);
+      color: var(--ts-blue-900);
+      border-color: rgba(35, 72, 143, 0.12);
+    }
+
+    .pill-gold {
+      background: rgba(243, 198, 61, 0.12);
+      color: #8f6500;
+      border-color: rgba(235, 193, 74, 0.18);
+    }
+
+    .metric {
+      display: grid;
+      gap: 0.35rem;
+      padding: 1rem;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
+      border: 1px solid rgba(214, 224, 239, 0.95);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 10px 22px rgba(27, 52, 99, 0.05);
+    }
+
+    .metric strong {
+      font-size: 1.6rem;
+      letter-spacing: -0.05em;
+      color: var(--ts-blue-900);
+    }
+
+    .progress-stack {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .progress-item {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .progress-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--ts-muted);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .progress-track {
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #edf3fb 0%, #e2eaf6 100%);
+      border: 1px solid rgba(214, 224, 239, 0.95);
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(25, 60, 128, 0.08);
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--ts-blue-700), var(--ts-blue-500));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    }
+
+    .progress-fill.gold {
+      background: linear-gradient(90deg, #e7b72e, var(--ts-gold-500));
+    }
+
+    .status-bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid rgba(214, 224, 239, 0.95);
+      border-radius: 20px;
+      background: linear-gradient(180deg, #fbfdff 0%, #f3f7fd 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.88),
+        0 10px 20px rgba(25, 60, 128, 0.04);
+    }
+
+    .product-card {
+      padding: 0;
+    }
+
+    .product-media {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(214, 224, 239, 0.95);
+      background: linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+    }
+
+    .product-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      padding: 0.5rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--ts-blue-900);
+      border: 1px solid rgba(214, 224, 239, 0.95);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .product-copy {
+      padding: 1.15rem 1.2rem 1.25rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .product-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .product-title {
+      margin: 0;
+      font-size: 1.12rem;
+      color: var(--ts-blue-900);
+      line-height: 1.3;
+    }
+
+    .product-subtitle {
+      margin: 0.35rem 0 0;
+      color: var(--ts-muted);
+      font-size: 0.94rem;
+      line-height: 1.5;
+    }
+
+    .product-price {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .product-price strong {
+      display: block;
+      color: var(--ts-blue-900);
+      font-size: 1.35rem;
+      letter-spacing: -0.04em;
+    }
+
+    .product-price span {
+      color: var(--ts-muted);
+      font-size: 0.82rem;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--ts-gold-500);
+      box-shadow: 0 0 0 8px rgba(243, 198, 61, 0.16);
+    }
+
+    .app-card.feature {
+      background:
+        linear-gradient(135deg, rgba(15, 46, 109, 0.98), rgba(35, 72, 143, 0.92)),
+        var(--ts-blue-900);
+      color: var(--ts-white);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-card.feature::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -60px auto;
+      width: 180px;
+      height: 180px;
+      background: rgba(243, 198, 61, 0.18);
+      border-radius: 32px;
+      transform: rotate(18deg);
+      z-index: 0;
+    }
+
+    .app-card.feature::before {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 72%);
+      z-index: 0;
+    }
+
+    .feature h3,
+    .feature p,
+    .feature .mini-label {
+      color: inherit;
+    }
+
+    .feature .button-secondary {
+      border-color: rgba(255, 255, 255, 0.24);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
+      color: var(--ts-white);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        inset 0 -5px 10px rgba(6, 18, 43, 0.18),
+        0 4px 10px rgba(6, 18, 43, 0.18);
+    }
+
+    .footer-note {
+      text-align: center;
+      color: var(--ts-muted);
+      margin-top: 1.25rem;
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .type-specimen,
+      .icon-library-grid,
+      .components-grid,
+      .application-grid,
+      .token-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        width: min(100% - 20px, 1220px);
+        padding-top: 12px;
+      }
+
+      .hero,
+      .section {
+        border-radius: 24px;
+      }
+
+      .brand-lockup {
+        grid-template-columns: 1fr;
+      }
+
+      .wordmark {
+        padding-left: 1rem;
+      }
+
+      .wordmark-top,
+      .wordmark-bottom {
+        font-size: clamp(2.2rem, 13vw, 4rem);
+      }
+
+      .signal-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .icon-showcase {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <span class="eyebrow">Techo Solutions Brand System</span>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="brand-lockup">
+            <div class="mark-wrap">
+              <img class="mark" src="./logo.svg" alt="Techo Solutions logo mark" />
+              <div class="tagline-script">Sell to us</div>
+            </div>
+            <div class="wordmark">
+              <p class="wordmark-top">Techo</p>
+              <p class="wordmark-bottom">Solutions</p>
+            </div>
+          </div>
+
+          <h1>Built from geometry, trust, and quick trade.</h1>
+          <p>
+            This system translates the logo into a practical interface language:
+            strong cobalt for confidence, warm gold for action, square-cut forms
+            for structure, and a handwritten accent for human approachability.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#tokens">View tokens</a>
+            <a class="button button-secondary" href="#applications">See applications</a>
+          </div>
+        </div>
+
+        <aside class="signal-card">
+          <div class="status-bar">
+            <div>
+              <span class="mini-label">Brand principles</span>
+              <strong>Reliable. Direct. Easy to transact.</strong>
+            </div>
+            <span class="status-dot" aria-hidden="true"></span>
+          </div>
+          <div class="signal-grid">
+            <div class="signal-item">
+              <span class="mini-label">Primary color</span>
+              <strong>#0F2E6D</strong>
+              <span>Confidence, authority, platform chrome.</span>
+            </div>
+            <div class="signal-item">
+              <span class="mini-label">Action color</span>
+              <strong>#F3C63D</strong>
+              <span>Offers, highlights, prompts, key conversion moments.</span>
+            </div>
+            <div class="signal-item">
+              <span class="mini-label">Shape language</span>
+              <strong>Squared loops</strong>
+              <span>90-degree turns and framed negative space.</span>
+            </div>
+            <div class="signal-item">
+              <span class="mini-label">Voice</span>
+              <strong>Practical warmth</strong>
+              <span>Corporate clarity balanced by a friendly human signal.</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="tokens">
+      <div class="section-head">
+        <div>
+          <h2>Color Tokens</h2>
+        </div>
+        <p>
+          The palette stays tight. Blue leads the structure, gold signals action,
+          and soft neutrals keep product screens readable.
+        </p>
+      </div>
+      <div class="token-grid">
+        <article class="token">
+          <div class="swatch" style="background:#0f2e6d;"></div>
+          <div class="token-copy"><strong>Blue 900</strong><span>#0F2E6D</span></div>
+        </article>
+        <article class="token">
+          <div class="swatch" style="background:#23488f;"></div>
+          <div class="token-copy"><strong>Blue 700</strong><span>#23488F</span></div>
+        </article>
+        <article class="token">
+          <div class="swatch" style="background:#3f69bb;"></div>
+          <div class="token-copy"><strong>Blue 500</strong><span>#3F69BB</span></div>
+        </article>
+        <article class="token">
+          <div class="swatch" style="background:#f3c63d;"></div>
+          <div class="token-copy"><strong>Gold 500</strong><span>#F3C63D</span></div>
+        </article>
+        <article class="token">
+          <div class="swatch" style="background:#fff5cc;"></div>
+          <div class="token-copy"><strong>Gold 100</strong><span>#FFF5CC</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Typography</h2>
+        </div>
+        <p>
+          A geometric sans for the operating system, with script reserved for
+          soft emphasis, signatures, and trusted service moments.
+        </p>
+      </div>
+      <div class="type-specimen">
+        <article class="type-card">
+          <p class="display-sample">Buy. Sell. Move fast with confidence.</p>
+          <p>
+            Plus Jakarta Sans handles interfaces, pricing, dashboards, and
+            product detail views. It stays crisp in small labels and confident in
+            large headlines.
+          </p>
+          <span class="script-note">Friendly where it matters.</span>
+        </article>
+        <article class="type-card">
+          <dl class="spec">
+            <div>
+              <dt>Display / H1</dt>
+              <dd>800 weight, tight tracking, navy on white.</dd>
+            </div>
+            <div>
+              <dt>Body / UI Copy</dt>
+              <dd>400-500 weight, spacious line height, muted neutral.</dd>
+            </div>
+            <div>
+              <dt>Labels / Meta</dt>
+              <dd>Uppercase, 0.12em tracking, used sparingly.</dd>
+            </div>
+            <div>
+              <dt>Script Accent</dt>
+              <dd>Caveat for tagline, reassurance, and human touchpoints.</dd>
+            </div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Icon Library</h2>
+        </div>
+        <p>
+          Icons should support action, trust, and product state. They stay small,
+          consistent, and reserved for places where text alone benefits from a visual cue.
+        </p>
+      </div>
+      <div class="icon-library-grid">
+        <article class="type-card">
+          <div class="icon-showcase">
+            <div class="icon-chip">
+              <span class="icon-chip-mark"><i data-lucide="shopping-bag" class="icon"></i></span>
+              <strong>Commerce</strong>
+              <span>Use for buy actions, listings, cart, and checkout moments.</span>
+            </div>
+            <div class="icon-chip">
+              <span class="icon-chip-mark"><i data-lucide="badge-check" class="icon"></i></span>
+              <strong>Trust</strong>
+              <span>Use for verified status, approved checks, and quality signals.</span>
+            </div>
+            <div class="icon-chip">
+              <span class="icon-chip-mark"><i data-lucide="wallet" class="icon"></i></span>
+              <strong>Payouts</strong>
+              <span>Use for settlement, withdrawal, and payment progress.</span>
+            </div>
+            <div class="icon-chip">
+              <span class="icon-chip-mark"><i data-lucide="scan-search" class="icon"></i></span>
+              <strong>Tracking</strong>
+              <span>Use for inspection, order lookup, and offer tracking.</span>
+            </div>
+            <div class="icon-chip">
+              <span class="icon-chip-mark"><i data-lucide="zap" class="icon"></i></span>
+              <strong>Speed</strong>
+              <span>Use for fast payout, urgency, and expedited flows.</span>
+            </div>
+            <div class="icon-chip">
+              <span class="icon-chip-mark"><i data-lucide="bar-chart-3" class="icon"></i></span>
+              <strong>Analytics</strong>
+              <span>Use for dashboards, reporting, and performance metrics.</span>
+            </div>
+          </div>
+        </article>
+        <article class="type-card">
+          <dl class="spec">
+            <div>
+              <dt>Stroke Style</dt>
+              <dd>Simple outline icons only. No mixed fill styles.</dd>
+            </div>
+            <div>
+              <dt>Default Size</dt>
+              <dd>16px in labels and badges, 18px in action buttons.</dd>
+            </div>
+            <div>
+              <dt>Usage Rule</dt>
+              <dd>Prefer icons for CTAs, status, and trust markers. Avoid decorative label spam.</dd>
+            </div>
+            <div>
+              <dt>Library</dt>
+              <dd>Lucide keeps the icon set crisp, neutral, and compatible with the system.</dd>
+            </div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Core Components</h2>
+        </div>
+        <p>
+          Components follow the logo’s structural rhythm: rounded frames, hard
+          directional layouts, and one strong accent at a time.
+        </p>
+      </div>
+      <div class="components-grid">
+        <article class="component-card">
+          <span class="mini-label">Actions</span>
+          <div class="stack">
+            <button class="button button-primary"><i data-lucide="smartphone" class="icon"></i>Sell Device</button>
+            <button class="button button-secondary"><i data-lucide="scan-search" class="icon"></i>Track Offer</button>
+            <div class="pill-row">
+              <span class="pill pill-blue"><i data-lucide="badge-check" class="icon"></i>Verified buyer</span>
+              <span class="pill pill-gold"><i data-lucide="zap" class="icon"></i>Fast payout</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="component-card">
+          <span class="mini-label">Inputs</span>
+          <div class="stack">
+            <input class="input" type="text" value="MacBook Pro 14-inch" />
+            <select class="select">
+              <option>Choose condition</option>
+              <option selected>Excellent</option>
+              <option>Good</option>
+            </select>
+            <textarea class="textarea">Battery cycle count under 150. Original charger included.</textarea>
+          </div>
+        </article>
+
+        <article class="component-card">
+          <span class="mini-label">Metrics</span>
+          <div class="stack">
+            <div class="metric">
+              <span class="mini-label">Average turnaround</span>
+              <strong>24 hrs</strong>
+              <span>From submission to offer decision.</span>
+            </div>
+            <div class="metric">
+              <span class="mini-label">Repeat sellers</span>
+              <strong>68%</strong>
+              <span>Trust compounding through a simple process.</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="component-card">
+          <span class="mini-label">Progress Bars</span>
+          <div class="progress-stack">
+            <div class="progress-item">
+              <div class="progress-meta">
+                <span><i data-lucide="clipboard-check" class="icon"></i>Offer review</span>
+                <span>72%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width:72%;"></div>
+              </div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-meta">
+                <span><i data-lucide="wallet" class="icon"></i>Payout processing</span>
+                <span>48%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill gold" style="width:48%;"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="applications">
+      <div class="section-head">
+        <div>
+          <h2>Application Surfaces</h2>
+        </div>
+        <p>
+          The system adapts well to operational dashboards, quote flows, and
+          customer acquisition sections without drifting from the logo.
+        </p>
+      </div>
+      <div class="application-grid">
+        <article class="app-card feature">
+          <span class="mini-label">Landing hero</span>
+          <h3 style="margin:0 0 0.75rem; font-size:1.8rem;">Turn unused devices into cash.</h3>
+          <p style="margin:0 0 1.1rem; line-height:1.7; max-width:28ch;">
+            Lead with a dark trust panel, keep the CTA bright, and use script
+            only where reassurance helps.
+          </p>
+          <a class="button button-secondary" href="#"><i data-lucide="arrow-right" class="icon"></i>Start valuation</a>
+        </article>
+
+        <article class="app-card">
+          <span class="mini-label">Operations dashboard</span>
+          <div class="stack">
+            <div class="status-bar">
+              <div>
+                <strong style="display:block; color:var(--ts-blue-900);">Incoming submissions</strong>
+                <span style="color:var(--ts-muted);">12 awaiting review</span>
+              </div>
+              <span class="pill pill-gold"><i data-lucide="flame" class="icon"></i>Priority batch</span>
+            </div>
+            <div class="metric">
+              <span class="mini-label">Offer accuracy</span>
+              <strong>94.2%</strong>
+              <span>Stable typography and low-noise charts fit the brand.</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="app-card product-card">
+          <div class="product-media">
+            <img
+              src="https://images.pexels.com/photos/7068406/pexels-photo-7068406.jpeg?cs=srgb&dl=pexels-duytamdo-7068406.jpg&fm=jpg"
+              alt="Silver smartphone on a red and white background"
+            />
+            <span class="product-badge">Featured listing</span>
+          </div>
+          <div class="product-copy">
+            <span class="mini-label">Ecommerce card</span>
+            <div class="product-head">
+              <div>
+                <h3 class="product-title">iPhone 11 Pro Max</h3>
+                <p class="product-subtitle">256GB, silver, inspected and ready for same-day offer.</p>
+              </div>
+              <div class="product-price">
+                <strong>M 8,500</strong>
+                <span>Market estimate</span>
+              </div>
+            </div>
+            <div class="pill-row">
+              <span class="pill pill-blue"><i data-lucide="shield-check" class="icon"></i>Grade A</span>
+              <span class="pill pill-gold"><i data-lucide="trending-up" class="icon"></i>High demand</span>
+            </div>
+            <button class="button button-primary"><i data-lucide="shopping-bag" class="icon"></i>Buy now</button>
+          </div>
+        </article>
+
+        <article class="app-card">
+          <span class="mini-label">Onboarding panel</span>
+          <div class="stack">
+            <input class="input" type="email" value="seller@techo.co" />
+            <input class="input" type="text" value="Preferred payout account" />
+            <button class="button button-primary"><i data-lucide="arrow-right" class="icon"></i>Continue</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      Self-contained HTML artifact for Techo Solutions. Colors, layout language,
+      and component behavior are derived from the provided logo.
+    </p>
+  </main>
+  <script>
+    window.lucide.createIcons();
+  </script>
+</body>
+</html>
