@@ -34,7 +34,7 @@ export const Header = async () => {
               className="site-header__search-input"
               id="header-search-input"
               name="q"
-              placeholder="Search phones, laptops, accessories, models or storage"
+              placeholder="Search fridges, TVs, sofas, phones, wardrobes or models"
             />
           </div>
         </form>

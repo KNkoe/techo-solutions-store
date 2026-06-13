@@ -317,7 +317,7 @@ export interface Product {
   } | null;
   price: number;
   currency: string;
-  status: 'draft' | 'approved' | 'reserved' | 'sold';
+  status: 'draft' | 'approved' | 'reserved' | 'sold' | 'archived';
   condition: 'new' | 'like-new' | 'excellent' | 'good' | 'fair';
   inventoryType: 'brand-new' | 'pre-owned';
   pickupOnly?: boolean | null;

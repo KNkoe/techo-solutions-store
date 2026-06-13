@@ -2,15 +2,27 @@
 
 import { Search } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
-export const SearchForm = () => {
+export const SearchForm = ({
+  buttonLabel = 'Search stock',
+  placeholder = 'Search title, brand, model or storage',
+  targetPath = '/search',
+}: {
+  buttonLabel?: string
+  placeholder?: string
+  targetPath?: '/search' | '/shop'
+}) => {
   const params = useSearchParams()
   const router = useRouter()
   const [query, setQuery] = useState(params.get('q') || '')
+
+  useEffect(() => {
+    setQuery(params.get('q') || '')
+  }, [params])
 
   return (
     <form
@@ -22,7 +34,8 @@ export const SearchForm = () => {
         if (query) next.set('q', query)
         else next.delete('q')
 
-        router.push(`/search?${next.toString()}`)
+        const queryString = next.toString()
+        router.push(queryString ? `${targetPath}?${queryString}` : targetPath)
       }}
     >
       <div className="search-form__field">
@@ -31,12 +44,12 @@ export const SearchForm = () => {
           aria-label="Search products"
           className="search-form__input"
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search title, brand, model or storage"
+          placeholder={placeholder}
           value={query}
         />
       </div>
       <Button size="sm" type="submit">
-        Search stock
+        {buttonLabel}
       </Button>
     </form>
   )

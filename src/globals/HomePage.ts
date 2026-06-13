@@ -31,8 +31,8 @@ export const HomePage: GlobalConfig = {
           required: false,
         },
         { name: 'supportLabel', type: 'text' },
-        { name: 'primaryCTA', type: 'text', defaultValue: 'Shop Devices', required: true },
-        { name: 'secondaryCTA', type: 'text', defaultValue: 'Sell a Device', required: true },
+        { name: 'primaryCTA', type: 'text', defaultValue: 'Shop items', required: true },
+        { name: 'secondaryCTA', type: 'text', defaultValue: 'Sell an item', required: true },
       ],
     },
     {
@@ -77,7 +77,7 @@ export const HomePage: GlobalConfig = {
       fields: [
         { name: 'title', type: 'text', required: true },
         { name: 'description', type: 'textarea', required: true },
-        { name: 'buttonLabel', type: 'text', defaultValue: 'Start Seller Verification' },
+        { name: 'buttonLabel', type: 'text', defaultValue: 'Start selling' },
       ],
     },
     {

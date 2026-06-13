@@ -30,15 +30,15 @@ export const HomeHowItWorksSection = ({ howItWorks }: { howItWorks?: HomePage['h
   <section className="site-shell page-section">
     <SectionHeading
       eyebrow="How it works"
-      title="Two clear paths: buy now or sell to Techo"
+      title="Two clear paths: buy something or sell something"
       copy="The storefront stays simple for buyers while seller review remains controlled."
     />
     <div className="dual-steps">
-      <StepGroup eyebrow="Buyers" steps={howItWorks?.buyers} title="Direct checkout, then pickup" />
+      <StepGroup eyebrow="Buyers" steps={howItWorks?.buyers} title="Choose an item, pay, then pick it up" />
       <StepGroup
         eyebrow="Sellers"
         steps={howItWorks?.sellers}
-        title="Verify first, then submit the device"
+        title="Start selling, then send the item details"
       />
     </div>
   </section>

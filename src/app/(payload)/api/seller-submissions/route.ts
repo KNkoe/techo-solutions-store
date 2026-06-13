@@ -20,7 +20,10 @@ export async function POST(request: Request) {
   const verification = parseSellerVerificationValue(cookieStore.get(sellerVerificationCookieName)?.value)
 
   if (!verification) {
-    return NextResponse.json({ error: 'Verify your WhatsApp number first.' }, { status: 403 })
+    return NextResponse.json(
+      { error: 'Start selling by confirming your WhatsApp number first.' },
+      { status: 403 },
+    )
   }
 
   const formData = await request.formData()

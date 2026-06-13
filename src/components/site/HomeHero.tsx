@@ -13,7 +13,7 @@ export const HomeHero = ({
 }) => {
   const headline = 'We buy and sell what still works.'
   const subtitle =
-    'Find furniture, appliances, electronics, and home essentials with real photos, direct checkout, and Maseru pickup.'
+    'Shop second-hand furniture, appliances, electronics, and home essentials with real photos and clear availability.'
   const heroImage = typeof hero.image === 'object' && hero.image ? (hero.image as Media) : null
   const heroImageUrl = heroImage?.sizes?.detail?.url || heroImage?.url || '/hero.webp'
   const heroImageAlt = heroImage?.alt || 'Techo Solutions banner hero'

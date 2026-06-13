@@ -12,6 +12,9 @@ export const getProductCategory = (product: Product) =>
   typeof product.category === 'object' && product.category ? product.category.title : null
 
 export const getProductAvailabilityLabel = (product: Product) =>
-  product.status === 'sold' ? 'Sold' : 'Available now'
+  product.status === 'sold' ? 'Sold out' : 'Still available'
+
+export const getProductAvailabilityTone = (product: Product) =>
+  product.status === 'sold' ? 'sold' : 'available'
 
 export const isProductAvailable = (product: Product) => product.status === 'approved'

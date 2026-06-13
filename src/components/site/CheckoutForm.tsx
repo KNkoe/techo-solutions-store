@@ -16,7 +16,7 @@ export const CheckoutForm = ({
 
   return (
     <form
-      className="stack-form"
+      className="stack-form flow-panel"
       onSubmit={async (event) => {
         event.preventDefault()
         setSubmitting(true)
@@ -43,35 +43,58 @@ export const CheckoutForm = ({
 
         if (!response.ok || !payload?.checkoutUrl) {
           setSubmitting(false)
-          setError(payload?.error || 'Unable to start checkout.')
+          setError(payload?.error || 'Could not start the payment.')
           return
         }
 
         window.location.href = payload.checkoutUrl
       }}
     >
-      <label>
-        Full name
-        <Input name="buyerName" required />
-      </label>
-      <label>
-        WhatsApp phone
-        <Input name="buyerPhone" required />
-      </label>
-      <label>
-        Email
-        <Input name="buyerEmail" type="email" />
-      </label>
-      <label>
-        Pickup contact name
-        <Input name="pickupContactName" required />
-      </label>
-      <label>
-        Pickup notes
-        <Textarea name="pickupNotes" rows={4} />
-      </label>
+      <div className="flow-panel__intro">
+        <p className="section-heading__eyebrow">Buyer details</p>
+        <h2>Enter your details to buy this item.</h2>
+        <p>We use WhatsApp for order updates after MoPay confirms the payment.</p>
+      </div>
+
+      <div className="form-section">
+        <div className="form-section__heading">
+          <h3>Your contact</h3>
+          <p>Use a number and name we can actually reach for pickup updates.</p>
+        </div>
+        <div className="stack-form__grid">
+          <label>
+            Full name
+            <Input name="buyerName" required />
+          </label>
+          <label>
+            WhatsApp phone
+            <Input name="buyerPhone" required />
+          </label>
+          <label>
+            Email
+            <Input name="buyerEmail" type="email" />
+          </label>
+          <label>
+            Pickup contact name
+            <Input name="pickupContactName" required />
+          </label>
+        </div>
+      </div>
+
+      <div className="form-section">
+        <div className="form-section__heading">
+          <h3>Pickup notes</h3>
+          <p>Optional details that help if someone else is collecting for you.</p>
+        </div>
+        <label>
+          Pickup notes
+          <Textarea name="pickupNotes" rows={4} />
+        </label>
+      </div>
+
+      <p className="form-hint">You will be redirected to MoPay to finish the payment.</p>
       <Button disabled={submitting} type="submit">
-        {submitting ? 'Starting payment...' : 'Pay with MoPay'}
+        {submitting ? 'Starting payment...' : 'Continue to MoPay'}
       </Button>
       {error ? <p className="form-error">{error}</p> : null}
     </form>

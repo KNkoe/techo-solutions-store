@@ -17,18 +17,25 @@ const imageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
 export const buildMetadata = ({
   description,
   image,
+  keywords,
   path = '/',
   title,
 }: {
   description?: string | null
   image?: Media | Config['db']['defaultIDType'] | null
+  keywords?: string[]
   path?: string
   title: string
 }): Metadata => ({
   title,
   description: description || undefined,
+  keywords,
   alternates: {
     canonical: path,
+  },
+  robots: {
+    follow: true,
+    index: true,
   },
   openGraph: {
     title,

@@ -4,6 +4,7 @@ import { simpleLexical } from '@/utilities/lexical'
 import { Buffer } from 'node:buffer'
 import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
+import sharp from 'sharp'
 
 const categorySeeds = [
   { title: 'Phones', inventoryType: 'pre-owned' as const, slug: 'phones' },
@@ -118,15 +119,20 @@ const productSeeds = [
   },
 ]
 
+const galleryVariants = [
+  { key: 'gallery-1', width: 1200, height: 1200, position: 'centre' as const },
+  { key: 'gallery-2', width: 1200, height: 900, position: 'entropy' as const },
+]
+
 const pageSeeds = [
   {
     slug: 'about',
     title: 'About Techo Solutions',
     eyebrow: 'Our Story',
-    summary: 'A Maseru-based tech business focused on trusted, practical buying and selling.',
+    summary: 'A Maseru-based second-hand goods business focused on practical buying and selling.',
     content: simpleLexical('Techo Solutions', [
-      'Techo Solutions buys and sells devices with a strong focus on trust, condition clarity, and direct human support.',
-      'The business is designed around real photos, local pickup, and WhatsApp communication that keeps both buyers and sellers informed.',
+      'Techo Solutions buys and sells second-hand goods with a strong focus on trust, condition clarity, and direct human support.',
+      'The business is built around real photos, clear availability, local pickup, and WhatsApp communication that keeps both buyers and sellers informed.',
     ]),
   },
   {
@@ -135,8 +141,8 @@ const pageSeeds = [
     eyebrow: 'Simple Process',
     summary: 'Techo Solutions keeps both buying and selling straightforward.',
     content: simpleLexical('How buying and selling works', [
-      'Buyers browse the live catalog, pay directly for a single item, and collect it after WhatsApp confirmation.',
-      'Sellers verify their number by OTP, submit item details and photos, then wait for review and possible inspection.',
+      'Buyers browse the live catalog, choose an item, pay, and collect it after WhatsApp confirmation.',
+      'Sellers start by confirming their number, submit item details and photos, then wait for review and possible inspection.',
     ]),
   },
   {
@@ -152,7 +158,7 @@ const pageSeeds = [
     slug: 'terms',
     title: 'Terms and Conditions',
     eyebrow: 'Legal',
-    summary: 'Pickup-focused terms for devices sold through Techo Solutions.',
+    summary: 'Pickup-focused terms for items sold through Techo Solutions.',
     content: simpleLexical('Terms', [
       'All items should be inspected at pickup. Listings aim to show the real condition of each item clearly.',
     ]),
@@ -274,8 +280,6 @@ export const seed = async ({ payload }: { payload: Payload; req?: PayloadRequest
       },
     })
 
-    if (existing.docs.length) continue
-
     const category = categoryMap.get(product.category)
     const brand = brandMap.get(product.brand)
 
@@ -284,66 +288,131 @@ export const seed = async ({ payload }: { payload: Payload; req?: PayloadRequest
     }
 
     let mediaDoc = mediaCache.get(product.imageUrl)
+    let sourceBuffer: Buffer | null = null
 
-    if (!mediaDoc) {
+    if (!mediaDoc || !sourceBuffer) {
       const response = await fetch(product.imageUrl)
       if (!response.ok) {
         throw new Error(`Failed to fetch seed image for ${product.title}`)
       }
 
       const buffer = Buffer.from(await response.arrayBuffer())
+      sourceBuffer = buffer
       const mimeType = response.headers.get('content-type') || 'image/jpeg'
       const extension = mimeType.includes('png') ? 'png' : 'jpg'
 
-      mediaDoc = await payload.create({
-        collection: 'media',
-        draft: false,
-        data: {
-          alt: product.imageAlt,
-        },
-        file: {
-          data: buffer,
-          mimetype: mimeType,
-          name: `${product.slug}.${extension}`,
-          size: buffer.byteLength,
-        },
-      })
+      if (!mediaDoc) {
+        mediaDoc = await payload.create({
+          collection: 'media',
+          draft: false,
+          data: {
+            alt: product.imageAlt,
+          },
+          file: {
+            data: buffer,
+            mimetype: mimeType,
+            name: `${product.slug}.${extension}`,
+            size: buffer.byteLength,
+          },
+        })
 
-      mediaCache.set(product.imageUrl, mediaDoc)
+        mediaCache.set(product.imageUrl, mediaDoc)
+      }
     }
 
-    await payload.create({
-      collection: 'products',
-      draft: false,
-      data: {
-        brand: brand.id,
-        category: category.id,
-        condition: product.condition,
-        currency: product.currency,
-        featured: product.featured || false,
-        hotDeal: product.hotDeal || false,
-        images: [{ image: mediaDoc.id }],
-        inventoryType: product.inventoryType,
-        knownIssues: product.knownIssues,
-        model: product.model,
-        network: product.network,
-        pickupOnly: true,
-        price: product.price,
-        ram: product.ram,
-        recentlyAdded: true,
-        shortDescription: product.shortDescription,
-        slug: product.slug,
-        status: product.status,
-        storage: product.storage,
-        title: product.title,
-        trustNotes: [
-          { note: 'Publicly promoted by Techo Solutions on Facebook.' },
-          { note: 'Pickup in Maseru only.' },
-          { note: 'WhatsApp support available for clarification before purchase.' },
-        ],
-        whatIsIncluded: product.whatIsIncluded,
-      },
-    })
+    if (!sourceBuffer) {
+      const response = await fetch(product.imageUrl)
+      if (!response.ok) {
+        throw new Error(`Failed to refetch seed image for ${product.title}`)
+      }
+
+      sourceBuffer = Buffer.from(await response.arrayBuffer())
+    }
+
+    const galleryMedia = await Promise.all(
+      galleryVariants.map(async (variant) => {
+        const alt = `${product.title} ${variant.key}`
+        const existingMedia = await payload.find({
+          collection: 'media',
+          limit: 1,
+          where: {
+            alt: {
+              equals: alt,
+            },
+          },
+        })
+
+        if (existingMedia.docs[0]) return existingMedia.docs[0]
+
+        const derivedBuffer = await sharp(sourceBuffer)
+          .resize({
+            width: variant.width,
+            height: variant.height,
+            fit: 'cover',
+            position: variant.position,
+          })
+          .jpeg({ quality: 88 })
+          .toBuffer()
+
+        return payload.create({
+          collection: 'media',
+          draft: false,
+          data: {
+            alt,
+          },
+          file: {
+            data: derivedBuffer,
+            mimetype: 'image/jpeg',
+            name: `${product.slug}-${variant.key}.jpg`,
+            size: derivedBuffer.byteLength,
+          },
+        })
+      }),
+    )
+
+    const productData = {
+      brand: brand.id,
+      category: category.id,
+      condition: product.condition,
+      currency: product.currency,
+      featured: product.featured || false,
+      hotDeal: product.hotDeal || false,
+      images: [{ image: mediaDoc.id }, ...galleryMedia.map((image) => ({ image: image.id }))],
+      inventoryType: product.inventoryType,
+      knownIssues: product.knownIssues,
+      model: product.model,
+      network: product.network,
+      pickupOnly: true,
+      price: product.price,
+      ram: product.ram,
+      recentlyAdded: true,
+      shortDescription: product.shortDescription,
+      slug: product.slug,
+      status: product.status,
+      storage: product.storage,
+      title: product.title,
+      trustNotes: [
+        { note: 'Publicly promoted by Techo Solutions on Facebook.' },
+        { note: 'Pickup in Maseru only.' },
+        { note: 'WhatsApp support available for clarification before purchase.' },
+      ],
+      whatIsIncluded: product.whatIsIncluded,
+    }
+
+    if (existing.docs.length) {
+      await payload.update({
+        collection: 'products',
+        id: existing.docs[0].id,
+        data: productData,
+        draft: false,
+      })
+    } else {
+      await payload.create({
+        collection: 'products',
+        draft: false,
+        data: productData,
+      })
+    }
   }
 
   for (const page of pageSeeds) {
@@ -380,12 +449,12 @@ export const seed = async ({ payload }: { payload: Payload; req?: PayloadRequest
       },
       seo: {
         defaultDescription:
-          'Techo Solutions sells trusted devices in Maseru with real photos, direct checkout, and WhatsApp support.',
-        defaultTitle: 'Techo Solutions | Buy and Sell Devices in Maseru',
+          'Techo Solutions sells second-hand goods in Maseru with real photos, clear availability, and WhatsApp support.',
+        defaultTitle: 'Techo Solutions | Buy and sell second-hand goods in Maseru',
       },
       siteName: 'Techo Solutions',
       supportWhatsAppNumber: '26650000001',
-      tagline: 'We buy and sell anything that works perfectly good.',
+      tagline: 'Buy and sell good second-hand items in Maseru.',
     },
   })
 
@@ -394,7 +463,7 @@ export const seed = async ({ payload }: { payload: Payload; req?: PayloadRequest
     data: {
       announcement: {
         label: 'Maseru pickup',
-        message: 'Direct checkout, real photos, and WhatsApp support for every order.',
+        message: 'Real photos, clear availability, and WhatsApp support for every order.',
       },
       faq: [
         {
@@ -403,41 +472,41 @@ export const seed = async ({ payload }: { payload: Payload; req?: PayloadRequest
         },
         {
           answer: 'No. Seller submissions are reviewed first and may require physical inspection before a purchase decision.',
-          question: 'Does submission guarantee Techo will buy my device?',
+          question: 'Does submission guarantee Techo will buy my item?',
         },
       ],
       hero: {
         description:
-          'Browse verified devices with real photos, pay directly through MoPay, and collect in Maseru with fast WhatsApp follow-up.',
+          'Shop second-hand goods with real photos, clear availability, and fast WhatsApp follow-up in Maseru.',
         eyebrow: 'Trusted local tech commerce',
         image: homepageBanner.id,
-        primaryCTA: 'Shop Devices',
-        secondaryCTA: 'Sell a Device',
+        primaryCTA: 'Shop items',
+        secondaryCTA: 'Sell an item',
         supportLabel: 'Clean. Practical. Transaction-focused.',
-        title: 'Buy trusted devices. Sell the tech you are ready to let go.',
+        title: 'Buy trusted items. Sell what you are ready to let go.',
       },
       howItWorks: {
         buyers: [
           { title: 'Browse the live catalog', description: 'See real photos, condition details, and straightforward pricing.' },
-          { title: 'Pay directly', description: 'Use MoPay for a simple one-item checkout flow.' },
+          { title: 'Pay directly', description: 'Use MoPay for a simple one-item payment flow.' },
           { title: 'Pick up in Maseru', description: 'Techo confirms the handover through WhatsApp once your order is ready.' },
         ],
         sellers: [
-          { title: 'Verify your WhatsApp number', description: 'OTP verification happens before the seller form opens.' },
-          { title: 'Send the device details', description: 'Share model, condition, price, location, and real photos.' },
+          { title: 'Confirm your WhatsApp number', description: 'A quick code check happens before the seller form opens.' },
+          { title: 'Send the item details', description: 'Share model, condition, price, location, and real photos.' },
           { title: 'Wait for review', description: 'Techo responds with the next step, including inspection if needed.' },
         ],
       },
       sellerCTA: {
-        buttonLabel: 'Start Seller Verification',
+        buttonLabel: 'Start selling',
         description:
-          'Tell Techo about your device, choose whether it will be collected or brought to the store, and wait for review.',
-        title: 'Ready to sell a device?',
+          'Tell Techo about the item you want to sell, add photos, and wait for review or a buying decision.',
+        title: 'Ready to sell something that still works?',
       },
       trustPillars: [
-        { title: 'Verified devices', description: 'Listings are curated around trust, condition clarity, and real operational follow-up.' },
+        { title: 'Trusted listings', description: 'Listings are curated around trust, condition clarity, and real operational follow-up.' },
         { title: 'Real photos', description: 'Each product page is designed to represent the actual item, not a placeholder mockup.' },
-        { title: 'Pickup in Maseru', description: 'The buyer journey stays simple: one item, one checkout, one pickup path.' },
+        { title: 'Pickup in Maseru', description: 'The buyer journey stays simple: one item, one payment, one pickup path.' },
         { title: 'Fast WhatsApp support', description: 'Buyers and sellers both get status updates through WhatsApp.' },
       ],
     },

@@ -1,4 +1,5 @@
 import configPromise from '@payload-config'
+import Link from 'next/link'
 import { getPayload } from 'payload'
 
 export default async function CheckoutCompletePage({
@@ -23,18 +24,43 @@ export default async function CheckoutCompletePage({
     : { docs: [] as any[] }
 
   const order = result.docs[0]
+  const prettyStatus = order?.status ? order.status.replaceAll('-', ' ') : ''
 
   return (
-    <div className="site-shell page-section">
-      <div className="status-card">
-        <h1>Payment update</h1>
+    <div className="site-shell page-section checkout-complete-page">
+      <div className="status-card checkout-complete-card">
+        <p className="section-heading__eyebrow">Order update</p>
+        <h1>{order ? 'Your order has been recorded.' : 'We could not confirm that reference.'}</h1>
         {order ? (
-          <p>
-            Order {order.reference} is currently marked as <strong>{order.status}</strong>. Techo Solutions
-            will continue the rest of the flow over WhatsApp.
-          </p>
+          <>
+            <p>
+              Order <strong>{order.reference}</strong> is currently marked as <strong>{prettyStatus}</strong>.
+              Techo Solutions will continue with the next steps over WhatsApp.
+            </p>
+            <div className="info-strip">
+              <span>Reference: {order.reference}</span>
+              <span>Status: {prettyStatus}</span>
+            </div>
+            <div className="seller-success__actions">
+              <Link className="button button-primary button-sm" href="/shop">
+                Continue shopping
+              </Link>
+              {order.productSnapshot?.slug ? (
+                <Link className="quiet-link quiet-link--action" href={`/products/${order.productSnapshot.slug}`}>
+                  View the item
+                </Link>
+              ) : null}
+            </div>
+          </>
         ) : (
-          <p>We could not find the order reference. Please contact Techo Solutions on WhatsApp.</p>
+          <>
+            <p>Please contact Techo Solutions on WhatsApp if you need help checking the payment result.</p>
+            <div className="seller-success__actions">
+              <Link className="button button-primary button-sm" href="/shop">
+                Back to shop
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </div>

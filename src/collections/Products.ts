@@ -13,7 +13,7 @@ import {
 import { slugField } from 'payload'
 
 const conditionOptions = ['new', 'like-new', 'excellent', 'good', 'fair'] as const
-const statusOptions = ['draft', 'approved', 'reserved', 'sold'] as const
+const statusOptions = ['draft', 'approved', 'reserved', 'sold', 'archived'] as const
 
 export const Products: CollectionConfig = {
   slug: 'products',

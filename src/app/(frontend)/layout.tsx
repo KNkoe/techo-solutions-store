@@ -47,5 +47,12 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(getServerSideURL()),
     title: settings.seo.defaultTitle,
     description: settings.seo.defaultDescription,
+    keywords: [
+      'second-hand goods Maseru',
+      'used electronics Lesotho',
+      'used furniture Maseru',
+      'buy and sell second hand goods',
+      'Techo Solutions',
+    ],
   }
 }

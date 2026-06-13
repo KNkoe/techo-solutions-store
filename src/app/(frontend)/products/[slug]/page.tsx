@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { CheckCircle2, MessageCircleMore, ShoppingBag } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { buildMetadata } from '@/utilities/metadata'
@@ -27,7 +28,10 @@ export async function generateMetadata({
 
   return buildMetadata({
     title: `${product.title} | Techo Solutions`,
-    description: product.meta?.description || product.shortDescription,
+    description:
+      product.meta?.description ||
+      product.shortDescription ||
+      `See photos, price, condition, and availability for ${product.title} at Techo Solutions.`,
     image: product.meta?.image || image,
     path: `/products/${product.slug}`,
   })
@@ -42,55 +46,87 @@ export default async function ProductPage({
   const product = await getProductBySlug(slug)
 
   if (!product) notFound()
+  const galleryImages = (product.images || [])
+    .map((entry) => (typeof entry.image === 'object' ? entry.image : null))
+    .filter((image) => image?.url)
+  const heroImage = galleryImages[0] || null
 
   return (
     <div className="site-shell page-section product-detail">
       <div className="product-detail__gallery">
-        {(product.images || []).map((entry, index) => {
-          const image = typeof entry.image === 'object' ? entry.image : null
-          if (!image?.url) return null
+        {heroImage?.url ? (
+          <div className="product-shot product-shot--hero">
+            <Image
+              alt={heroImage.alt}
+              src={getMediaUrl(heroImage.sizes?.detail?.url || heroImage.url)}
+              width={1400}
+              height={1100}
+            />
+          </div>
+        ) : null}
 
-          return (
-            <div className="product-shot" key={index}>
-              <Image
-                alt={image.alt}
-                src={getMediaUrl(image.sizes?.detail?.url || image.url)}
-                width={1200}
-                height={1200}
-              />
-            </div>
-          )
-        })}
+        {galleryImages.length > 1 ? (
+          <div className="product-thumb-grid">
+            {galleryImages.slice(1).map((image, index) => (
+              <div className="product-shot product-shot--thumb" key={index}>
+                <Image
+                  alt={image?.alt || product.title}
+                  src={getMediaUrl(image?.sizes?.card?.url || image?.url)}
+                  width={800}
+                  height={800}
+                />
+              </div>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <div className="product-detail__summary">
-        <p className="section-heading__eyebrow">{product.reference}</p>
-        <h1>{product.title}</h1>
-        <p className="hero-copy">{product.shortDescription}</p>
-        <div className="product-trust-row">
-          <span>{product.inventoryType === 'brand-new' ? 'Brand New' : 'Pre-Owned'}</span>
-          <span>{product.condition.replace('-', ' ')}</span>
-          <span>{product.status === 'sold' ? 'Sold' : 'Available'}</span>
-          <span>Pickup in Maseru</span>
-        </div>
-        <div className="product-price">{formatCurrency(product.price, product.currency)}</div>
-        <div className="hero-actions">
-          {product.status === 'approved' ? (
-            <Button asChild>
-              <Link href={`/checkout/${product.slug}`}>Buy now</Link>
+        <div className="detail-panel detail-panel--summary">
+          <div className="product-detail__summary-top">
+            <p className="product-detail__reference">{product.reference}</p>
+            <span className={`product-detail__availability product-detail__availability--${product.status === 'sold' ? 'sold' : 'available'}`}>
+              <span className="product-detail__availability-dot" />
+              {product.status === 'sold' ? 'Sold out' : 'Still available'}
+            </span>
+          </div>
+          <h1 className="product-detail__title">{product.title}</h1>
+          <p className="product-detail__intro">{product.shortDescription}</p>
+          <div className="product-trust-row">
+            <span>{product.inventoryType === 'brand-new' ? 'Brand New' : 'Pre-Owned'}</span>
+            <span>{product.condition.replace('-', ' ')}</span>
+            <span>Pickup in Maseru</span>
+          </div>
+          <div className="product-detail__price-row">
+            <div className="product-price">{formatCurrency(product.price, product.currency)}</div>
+            <p className="product-detail__price-note">
+              {product.status === 'approved'
+                ? 'Available to buy now and collect in Maseru.'
+                : 'This listing stays visible so you can confirm it has already sold.'}
+            </p>
+          </div>
+          <div className="product-detail__actions">
+            {product.status === 'approved' ? (
+              <Button asChild className="product-detail__primary-action">
+                <Link href={`/checkout/${product.slug}`}>
+                  <ShoppingBag className="product-detail__action-icon" />
+                  Buy item
+                </Link>
+              </Button>
+            ) : (
+              <Button disabled variant="secondary">
+                Sold out
+              </Button>
+            )}
+            <Button asChild variant="secondary">
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(`Hi Techo Solutions, I want to ask about ${product.title} (${product.reference}).`)}`}
+              >
+                <MessageCircleMore className="product-detail__action-icon" />
+                Ask on WhatsApp
+              </a>
             </Button>
-          ) : (
-            <Button disabled variant="secondary">
-              Sold
-            </Button>
-          )}
-          <Button asChild variant="secondary">
-            <a
-              href={`https://wa.me/?text=${encodeURIComponent(`Hi Techo Solutions, I want to ask about ${product.title} (${product.reference}).`)}`}
-            >
-              WhatsApp us about this item
-            </a>
-          </Button>
+          </div>
         </div>
 
         <div className="spec-grid">
@@ -132,16 +168,30 @@ export default async function ProductPage({
           ) : null}
         </div>
 
+        {product.trustNotes?.length ? (
+          <section className="detail-panel">
+            <h2 className="detail-panel__title">What to know before pickup</h2>
+            <div className="detail-note-list">
+              {product.trustNotes.map((item) => (
+                <div className="detail-note" key={item.id || item.note}>
+                  <CheckCircle2 className="detail-note__icon" />
+                  <span>{item.note}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
         {product.whatIsIncluded ? (
           <section className="detail-panel">
-            <h2>What&apos;s included</h2>
+            <h2 className="detail-panel__title">What&apos;s included</h2>
             <p>{product.whatIsIncluded}</p>
           </section>
         ) : null}
 
         {product.knownIssues ? (
           <section className="detail-panel">
-            <h2>Known issues</h2>
+            <h2 className="detail-panel__title">Known issues</h2>
             <p>{product.knownIssues}</p>
           </section>
         ) : null}

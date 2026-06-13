@@ -64,10 +64,14 @@ export default async function DynamicPage({
 
   return (
     <div className="site-shell page-section content-page">
-      {page.eyebrow ? <p className="section-heading__eyebrow">{page.eyebrow}</p> : null}
-      <h1>{page.title}</h1>
-      {page.summary ? <p className="hero-copy">{page.summary}</p> : null}
-      <RichText data={page.content} />
+      <section className="content-page__hero detail-panel">
+        {page.eyebrow ? <p className="section-heading__eyebrow">{page.eyebrow}</p> : null}
+        <h1>{page.title}</h1>
+        {page.summary ? <p className="route-hero__copy">{page.summary}</p> : null}
+      </section>
+      <section className="content-page__body detail-panel">
+        <RichText data={page.content} />
+      </section>
     </div>
   )
 }

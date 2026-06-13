@@ -18,7 +18,7 @@ export const SiteSettings: GlobalConfig = {
     {
       name: 'tagline',
       type: 'text',
-      defaultValue: 'We buy and sell anything that works perfectly good.',
+      defaultValue: 'Buy and sell good second-hand items in Maseru.',
       required: true,
     },
     {

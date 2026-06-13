@@ -2,37 +2,100 @@ import Link from 'next/link'
 
 import type { Brand, Category } from '@/payload-types'
 
-import { SectionHeading } from '@/components/site/SectionHeading'
-
 export const CatalogFilters = ({
   brands,
   categories,
+  current,
 }: {
   brands: Brand[]
   categories: Category[]
+  current: {
+    availability?: string
+    brand?: string
+    category?: string
+    inventoryType?: string
+    q?: string
+  }
 }) => (
   <aside className="catalog-filters">
-    <SectionHeading eyebrow="Filters" title="Refine the catalog" />
-    <div className="filter-group">
-      <h3>Categories</h3>
-      {categories.map((category) => (
-        <Link href={`/shop?category=${category.slug}`} key={category.id}>
-          {category.title}
-        </Link>
-      ))}
-    </div>
-    <div className="filter-group">
-      <h3>Brands</h3>
-      {brands.map((brand) => (
-        <Link href={`/shop?brand=${brand.slug}`} key={brand.id}>
-          {brand.title}
-        </Link>
-      ))}
-    </div>
-    <div className="filter-group">
-      <h3>Availability</h3>
-      <Link href="/shop?availability=available">Available</Link>
-      <Link href="/shop?availability=sold">Sold archive</Link>
+    <div className="filter-group filter-group--panel">
+      <div className="filter-group__header">
+        <div className="filter-group__heading">
+          <h2>Filters</h2>
+          <p>Narrow the listings quickly.</p>
+        </div>
+        {current.category || current.brand || current.availability || current.inventoryType || current.q ? (
+          <Link className="quiet-link quiet-link--action" href="/shop">
+            Clear
+          </Link>
+        ) : null}
+      </div>
+
+      <div className="filter-section">
+        <h3>Status</h3>
+        <div className="filter-chip-list">
+          <Link
+            className={current.availability === 'available' ? 'is-active' : undefined}
+            href="/shop?availability=available"
+          >
+            Still available
+          </Link>
+          <Link
+            className={current.availability === 'sold' ? 'is-active' : undefined}
+            href="/shop?availability=sold"
+          >
+            Sold archive
+          </Link>
+        </div>
+      </div>
+
+      <div className="filter-section">
+        <h3>Type</h3>
+        <div className="filter-chip-list">
+          <Link
+            className={current.inventoryType === 'pre-owned' ? 'is-active' : undefined}
+            href="/shop?inventoryType=pre-owned"
+          >
+            Pre-owned
+          </Link>
+          <Link
+            className={current.inventoryType === 'brand-new' ? 'is-active' : undefined}
+            href="/shop?inventoryType=brand-new"
+          >
+            Brand new
+          </Link>
+        </div>
+      </div>
+
+      <div className="filter-section">
+        <h3>Categories</h3>
+        <div className="filter-chip-list">
+          {categories.map((category) => (
+            <Link
+              className={current.category === category.slug ? 'is-active' : undefined}
+              href={`/shop?category=${category.slug}`}
+              key={category.id}
+            >
+              {category.title}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="filter-section">
+        <h3>Brands</h3>
+        <div className="filter-chip-list">
+          {brands.map((brand) => (
+            <Link
+              className={current.brand === brand.slug ? 'is-active' : undefined}
+              href={`/shop?brand=${brand.slug}`}
+              key={brand.id}
+            >
+              {brand.title}
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   </aside>
 )
