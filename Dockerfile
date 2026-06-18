@@ -2,7 +2,7 @@
 # From https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 
 FROM node:22.17.0-alpine AS base
-ARG PNPM_VERSION=10
+ARG PNPM_VERSION=11.8.0
 
 # Install dependencies only when needed
 FROM base AS deps

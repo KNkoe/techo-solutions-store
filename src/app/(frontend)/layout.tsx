@@ -47,6 +47,14 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(getServerSideURL()),
     title: settings.seo.defaultTitle,
     description: settings.seo.defaultDescription,
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/favicon.svg', type: 'image/svg+xml' },
+      ],
+      apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+      shortcut: ['/favicon.ico'],
+    },
     keywords: [
       'second-hand goods Maseru',
       'used electronics Lesotho',

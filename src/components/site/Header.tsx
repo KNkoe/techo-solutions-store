@@ -35,6 +35,7 @@ export const Header = async () => {
               id="header-search-input"
               name="q"
               placeholder="Search fridges, TVs, sofas, phones, wardrobes or models"
+              suppressHydrationWarning
             />
           </div>
         </form>
