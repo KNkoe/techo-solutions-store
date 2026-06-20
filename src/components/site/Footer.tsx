@@ -1,10 +1,13 @@
 import Link from 'next/link'
 
 import { Logo } from '@/components/Logo'
+import { storeAddress } from '@/config/storeLocation'
 import { getCachedSiteSettings } from '@/utilities/getSettings'
 
 export const Footer = async () => {
   const settings = await getCachedSiteSettings()
+  const pickupAddress =
+    settings.pickup.address === 'Maseru, Lesotho' ? storeAddress : settings.pickup.address
 
   return (
     <footer className="site-footer">
@@ -16,7 +19,7 @@ export const Footer = async () => {
         <div>
           <h3>Visit</h3>
           <p>{settings.pickup.locationName}</p>
-          <p>{settings.pickup.address}</p>
+          <p>{pickupAddress}</p>
         </div>
         <div>
           <h3>Hours</h3>

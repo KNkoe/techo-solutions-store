@@ -1,5 +1,6 @@
 import type { Payload, PayloadRequest } from 'payload'
 
+import { storeAddress } from '@/config/storeLocation'
 import { simpleLexical } from '@/utilities/lexical'
 import { Buffer } from 'node:buffer'
 import { readFile } from 'node:fs/promises'
@@ -133,6 +134,7 @@ const pageSeeds = [
     content: simpleLexical('Techo Solutions', [
       'Techo Solutions buys and sells second-hand goods with a strong focus on trust, condition clarity, and direct human support.',
       'The business is built around real photos, clear availability, local pickup, and WhatsApp communication that keeps both buyers and sellers informed.',
+      `Visit us at ${storeAddress}`,
     ]),
   },
   {
@@ -444,7 +446,7 @@ export const seed = async ({ payload }: { payload: Payload; req?: PayloadRequest
     data: {
       adminNotificationNumbers: [{ phone: '26650000001' }],
       pickup: {
-        address: 'Maseru, Lesotho',
+        address: storeAddress,
         businessHours: 'Mon-Sat, 08:00 - 17:00',
         instructions: 'Wait for the ready-for-pickup WhatsApp before coming to collect your item.',
         locationName: 'Techo Solutions Store',
