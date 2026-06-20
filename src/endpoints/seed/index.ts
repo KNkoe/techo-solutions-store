@@ -237,6 +237,7 @@ export const seed = async ({ payload }: { payload: Payload; req?: PayloadRequest
   )
 
   const mediaCache = new Map<string, any>()
+  const sourceBufferCache = new Map<string, Buffer>()
   const homepageBannerAlt = 'Techo Solutions homepage banner'
   const existingHomepageBanner = await payload.find({
     collection: 'media',
@@ -288,45 +289,50 @@ export const seed = async ({ payload }: { payload: Payload; req?: PayloadRequest
     }
 
     let mediaDoc = mediaCache.get(product.imageUrl)
-    let sourceBuffer: Buffer | null = null
-
-    if (!mediaDoc || !sourceBuffer) {
-      const response = await fetch(product.imageUrl)
-      if (!response.ok) {
-        throw new Error(`Failed to fetch seed image for ${product.title}`)
-      }
-
-      const buffer = Buffer.from(await response.arrayBuffer())
-      sourceBuffer = buffer
-      const mimeType = response.headers.get('content-type') || 'image/jpeg'
-      const extension = mimeType.includes('png') ? 'png' : 'jpg'
-
-      if (!mediaDoc) {
-        mediaDoc = await payload.create({
-          collection: 'media',
-          draft: false,
-          data: {
-            alt: product.imageAlt,
-          },
-          file: {
-            data: buffer,
-            mimetype: mimeType,
-            name: `${product.slug}.${extension}`,
-            size: buffer.byteLength,
-          },
-        })
-
-        mediaCache.set(product.imageUrl, mediaDoc)
-      }
-    }
+    let sourceBuffer: Buffer | null = sourceBufferCache.get(product.imageUrl) || null
+    let mimeType = 'image/jpeg'
+    let extension = 'jpg'
 
     if (!sourceBuffer) {
-      const response = await fetch(product.imageUrl)
-      if (!response.ok) {
-        throw new Error(`Failed to refetch seed image for ${product.title}`)
+      try {
+        const response = await fetch(product.imageUrl)
+        if (response.ok) {
+          sourceBuffer = Buffer.from(await response.arrayBuffer())
+          mimeType = response.headers.get('content-type') || 'image/jpeg'
+          extension = mimeType.includes('png') ? 'png' : 'jpg'
+        } else {
+          payload.logger.warn(`Seed image unavailable for ${product.title}; using local fallback.`)
+        }
+      } catch {
+        payload.logger.warn(`Seed image fetch failed for ${product.title}; using local fallback.`)
       }
 
-      sourceBuffer = Buffer.from(await response.arrayBuffer())
+      if (!sourceBuffer) {
+        const fallbackPath = fileURLToPath(new URL('../../../public/hero.webp', import.meta.url))
+        sourceBuffer = await readFile(fallbackPath)
+        mimeType = 'image/webp'
+        extension = 'webp'
+      }
+
+      sourceBufferCache.set(product.imageUrl, sourceBuffer)
+    }
+
+    if (!mediaDoc) {
+      mediaDoc = await payload.create({
+        collection: 'media',
+        draft: false,
+        data: {
+          alt: product.imageAlt,
+        },
+        file: {
+          data: sourceBuffer,
+          mimetype: mimeType,
+          name: `${product.slug}.${extension}`,
+          size: sourceBuffer.byteLength,
+        },
+      })
+
+      mediaCache.set(product.imageUrl, mediaDoc)
     }
 
     const galleryMedia = await Promise.all(

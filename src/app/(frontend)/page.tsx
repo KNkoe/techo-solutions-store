@@ -32,7 +32,7 @@ export default async function HomePage() {
     getCatalogFacets(),
   ])
 
-  const categories = facets.categories.slice(0, 10)
+  const categories = facets.categories
   const supportHref = `https://wa.me/${settings.supportWhatsAppNumber}`
   const heroProducts = [...featured, ...hotDeals, ...recent]
     .filter((product, index, all) => {

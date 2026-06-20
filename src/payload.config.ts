@@ -23,20 +23,34 @@ import { getServerSideURL } from './utilities/getURL'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const bucket = process.env.STORAGE_S3_BUCKET || process.env.RUSTFS_BUCKET
-const accessKey = process.env.STORAGE_S3_ACCESS_KEY || process.env.RUSTFS_ACCESS_KEY
-const secretKey = process.env.STORAGE_S3_SECRET_KEY || process.env.RUSTFS_SECRET_KEY
-const endpoint = (process.env.STORAGE_S3_ENDPOINT || process.env.RUSTFS_ENDPOINT || '').replace(
-  /\/$/,
-  '',
+const hasRustfsConfig = Boolean(
+  process.env.RUSTFS_BUCKET &&
+    process.env.RUSTFS_ACCESS_KEY &&
+    process.env.RUSTFS_SECRET_KEY &&
+    process.env.RUSTFS_ENDPOINT,
 )
-const region = process.env.STORAGE_S3_REGION || process.env.RUSTFS_REGION || 'us-east-1'
-const objectAcl =
-  process.env.STORAGE_S3_OBJECT_ACL === 'private' || process.env.RUSTFS_OBJECT_ACL === 'private'
-    ? ('private' as const)
-    : ('public-read' as const)
+const rustfsEndpoint = process.env.RUSTFS_ENDPOINT?.replace(/\/$/, '')
+const rustfsObjectAcl =
+  process.env.RUSTFS_OBJECT_ACL === 'private' ? ('private' as const) : ('public-read' as const)
 
-const hasS3Config = Boolean(bucket && accessKey && secretKey && endpoint)
+const storagePlugin = hasRustfsConfig
+  ? s3Storage({
+      acl: rustfsObjectAcl,
+      collections: {
+        media: true,
+      },
+      bucket: process.env.RUSTFS_BUCKET!,
+      config: {
+        credentials: {
+          accessKeyId: process.env.RUSTFS_ACCESS_KEY!,
+          secretAccessKey: process.env.RUSTFS_SECRET_KEY!,
+        },
+        endpoint: rustfsEndpoint,
+        region: process.env.RUSTFS_REGION || 'us-east-1',
+        forcePathStyle: true,
+      },
+    })
+  : null
 
 export default buildConfig({
   admin: {
@@ -76,26 +90,7 @@ export default buildConfig({
   globals: [HomePage, SiteSettings],
   cors: [getServerSideURL()].filter(Boolean),
   plugins: [
-    ...(hasS3Config
-      ? [
-          s3Storage({
-            acl: objectAcl,
-            collections: {
-              media: true,
-            },
-            bucket: bucket!,
-            config: {
-              credentials: {
-                accessKeyId: accessKey!,
-                secretAccessKey: secretKey!,
-              },
-              endpoint,
-              region,
-              forcePathStyle: true,
-            },
-          }),
-        ]
-      : []),
+    ...(storagePlugin ? [storagePlugin] : []),
     ...plugins,
   ],
   secret: process.env.PAYLOAD_SECRET,

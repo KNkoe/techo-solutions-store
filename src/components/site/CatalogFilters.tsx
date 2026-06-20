@@ -29,7 +29,7 @@ export const CatalogFilters = ({
 
   return (
     <aside className="catalog-filters">
-      <details className="catalog-filters__details">
+      <details className="catalog-filters__details" open>
         <summary className="catalog-filters__summary">
           <span className="catalog-filters__summary-label">
             <SlidersHorizontal aria-hidden="true" className="catalog-filters__summary-icon" />
